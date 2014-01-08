@@ -17,4 +17,10 @@
 		 * @throw Exception
 		 */
 		 public function faceValueIsEqual($testCard);
+		 
+		 /**
+		  * Method to get a normalised value of the card
+		  * @return integer
+		  */
+		 public function getValue();
 	}
