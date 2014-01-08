@@ -2,70 +2,27 @@
 
 namespace CardPairs;
 
+include_once('CardInterface.php');
+
 class Card implements CardInterface {
 	
 	/**
-	 * Constants defining our suites
-	 */
-	const SUITE_CLUBS = 1;
-	const SUITE_SPADES = 2;
-	const SUITE_HEARTS = 3;
-	const SUITE_DIAMONDS = 4;
-	
-	/**
-	 * Array of card names mapping to the constants
-	 *
-	 * @var array
-	 */
-	protected $_suites = array (
-			self::SUITE_CLUBS => 'Clubs',
-			self::SUITE_SPADES => 'Spades',
-			self::SUITE_HEARTS => 'Hearts',
-			self::SUITE_DIAMONDS => 'Diamonds' 
-	);
-	
-	/**
-	 * Array of face values for the cards normalised to 0 index
-	 *
-	 * @var array
-	 */
-	protected $_faceValues = array (
-			'Two',
-			'Three',
-			'Four',
-			'Five',
-			'Six',
-			'Seven',
-			'Eight',
-			'Nine',
-			'Ten',
-			'Jack',
-			'Queen',
-			'King',
-			'Ace' 
-	);
-	
-	/**
-	 *
 	 * @var boolean
 	 */
 	protected $_isJoker = FALSE;
 	
 	/**
-	 *
 	 * @var integer
 	 */
 	protected $_faceValue;
 	
 	/**
-	 *
 	 * @var integer
 	 */
 	protected $_suite;
 	
 	/**
 	 * Constructor that creates an instance of a card
-	 *
 	 * @param $cardValue integer        	
 	 * @param $cardSuite const        	
 	 * @param $isJoker boolean        	
@@ -74,20 +31,19 @@ class Card implements CardInterface {
 	public function __construct($cardValue = NULL, $cardSuite = NULL, $isJoker = FALSE) {
 		$this->_isJoker = $isJoker;
 		
-		if (array_key_exists ( $cardSuite, $this->_suites ) === FALSE && $isJoker === FALSE) {
+		if (array_key_exists ( $cardSuite, Deck::getSuites() ) === FALSE && $isJoker === FALSE) {
 			throw new \Exception ( 'Unknown suite used in card initialisation' );
 		}
 		
 		$this->_suite = $cardSuite;
 		
-		if (($cardValue < 0 || $cardValue < count ( $this->_faceValues )) && $isJoker === FALSE) {
+		if (($cardValue < 0 || $cardValue > count ( Deck::getFaceValues() )) && $isJoker === FALSE) {
 			throw new \Exception ( 'Face value is out of bounds' );
 		}
 		$this->_faceValue = $cardValue;
 	}
 	
 	/**
-	 * Method to see if our card is a joker
 	 *
 	 * @return boolean
 	 */
@@ -96,7 +52,6 @@ class Card implements CardInterface {
 	}
 	
 	/**
-	 *
 	 * @see CardInterface
 	 */
 	public function isInSuite($testSuite) {
@@ -104,7 +59,6 @@ class Card implements CardInterface {
 	}
 	
 	/**
-	 *
 	 * @see CardInterface
 	 */
 	public function faceValueIsEqual($testCard) {
@@ -132,14 +86,13 @@ class Card implements CardInterface {
 	
 	/**
 	 * Method to get a string representation of the card
-	 *
 	 * @return string
 	 */
 	public function __toString() {
 		if ($this->isJoker ()) {
-			return "Joker";
+			return "a Joker";
 		}
-		return sprintf ( "%s of %s", $this->_getFaceValue (), $this->_getSuite () );
+		return sprintf ( "the %s of %s", $this->_getFaceValue (), $this->_getSuite () );
 	}
 	
 	/**
@@ -147,7 +100,7 @@ class Card implements CardInterface {
 	 * @return string
 	 */
 	protected function _getFaceValue() {
-		return $this->_faceValues[$this->_faceValue];
+		return Deck::getFaceValue($this->_faceValue);
 	}
 	
 	/**
@@ -155,6 +108,6 @@ class Card implements CardInterface {
 	 * @return string
 	 */
 	protected function _getSuite() {
-		return $this->_suites[$this->_suite];
+		return Deck::getSuite($this->_suite);
 	}
 }
